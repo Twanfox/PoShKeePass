@@ -1579,6 +1579,7 @@ function Remove-KeePassDatabaseConfiguration
     }
 }
 
+##DEV
 function New-KeePassKeyFile
 {
     <#
@@ -3264,15 +3265,40 @@ function New-KPCompositeKey
         [String] $KeyFile,
 
         [Parameter(Position=2, Mandatory=$false)]
-        [Switch] $UseWindowsCredential
+        [Switch] $UseWindowsAccount
     )
     begin
     {
-        $KPCompositeKey = New-Object -TypeName KeepassLib.Keys.CompositeKey
+        $CompositeKey = New-Object -TypeName KeepassLib.Keys.CompositeKey
     }
     process
     {
-    
+        if($MasterKey)
+        {
+            $CompositeKey.AddUserKey((New-Object KeepassLib.Keys.KcpPassword([System.Runtime.InteropServices.Marshal]::PtrToStringUni([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($MasterKey)))))
+        }
+
+        if($KeyFile)
+        {
+            try
+            {
+                ##Exception : I will want to handle this error in a more user friendly error, as is the style of the rest of this module.
+                $KeyPathItem = Get-Item $KeyFile -ErrorAction Stop
+                $CompositeKey.AddUserKey((New-Object KeepassLib.Keys.KcpKeyfile($KeyPathItem.FullName)))
+            }
+            catch
+            {
+                ##Exception : I will want to handle this error in a more user friendly error, as is the style of the rest of this module.
+                Write-Warning ('Could not read the specfied Key file [{0}].' -f $KeyPathItem.FullName)
+            }
+        }
+
+        if($UseWindowsAccount)
+        {
+            $CompositeKey.AddUserKey((New-Object KeepassLib.Keys.KcpUserAccount))
+        }
+
+        $CompositeKey
     }
     end
     {
@@ -3280,6 +3306,50 @@ function New-KPCompositeKey
     }
 }
 
+##DEV
+## New Blank DB
+## $KeyFile = New-KeePassKeyFile -path blah -passthru
+## $CompositeKey = New-KPCompositeKey -KeyPath $KeyFile.FullName -OtherSettings
+## New-KPDatabase -DatabasePath blah -CompositeKey $CompositeKey
+function New-KPDatabase
+{
+    <#
+        .SYNOPSIS
+            
+        .DESCRIPTION
+            
+        .PARAMETER
+        .EXAMPLE
+        .NOTES
+        .INPUTS
+        .OUTPUTS
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Position=0, Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String] $DatabasePath,
+
+        [Parameter(Position=1, Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [Object] $CompositeKey
+    )
+    begin
+    {
+        $Database = New-Object -TypeName KeePassLib.PwDatabase
+    }
+    process
+    {
+        $IOInfo = [KeepassLib.Serialization.IOConnectionInfo]::FromPath($DatabasePath)
+        $Database.New($IOInfo, $CompositeKey)
+        $Database.Save()
+    }
+    end
+    {
+        
+    }
+}
 
 function Test-KPPasswordValue
 {
