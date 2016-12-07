@@ -1579,6 +1579,45 @@ function Remove-KeePassDatabaseConfiguration
     }
 }
 
+function New-KeePassKeyFile
+{
+    <#
+        .SYNOPSIS
+            Creates a new KeePass KeyFile to be used in a KeePass CompositeKey.
+        .DESCRIPTION
+            This will create a Keyfile using the keepasslib random key generation.
+        .PARAMETER KeyFilePath
+            Path to Key File to be created.
+        .EXAMPLE
+        .NOTES
+        .INPUTS
+        .OUTPUTS
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Position=0, Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String] $KeyFilePath,
+
+        [Parameter(Position=1, Mandatory=$false)]
+        [Switch] $PassThru
+    )
+    begin
+    {
+    }
+    process
+    {
+        ## Create New Random Generated KeyFile.
+        [KeePassLib.Keys.KcpKeyFile]::Create($KeyFilePath, $null)
+        ## PassThru
+        if($PassThru)
+        {
+            Get-Item -Path $KeyFilePath
+        }
+    }
+}
+
 <#
 # Internals
 # *These functions below support all of the functions above.
@@ -3198,6 +3237,49 @@ function Remove-KPGroup
         }
     }
 }
+
+##DEV
+function New-KPCompositeKey
+{
+    <#
+        .SYNOPSIS
+            Creates a New KeePass CompositeKey
+        .DESCRIPTION
+            Create New KeePass CompositeKey of type: KeePassLib.Keys.CompositeKey.
+        .PARAMETER
+        .EXAMPLE
+        .NOTES
+        .INPUTS
+        .OUTPUTS
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Position=0, Mandatory=$false)]
+        [ValidateNotNullorEmpty()]
+        [SecureString] $MasterKey,
+
+        [Parameter(Position=1, Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String] $KeyFile,
+
+        [Parameter(Position=2, Mandatory=$false)]
+        [Switch] $UseWindowsCredential
+    )
+    begin
+    {
+        $KPCompositeKey = New-Object -TypeName KeepassLib.Keys.CompositeKey
+    }
+    process
+    {
+    
+    }
+    end
+    {
+        
+    }
+}
+
 
 function Test-KPPasswordValue
 {
