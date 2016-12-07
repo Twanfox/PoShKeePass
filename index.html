@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>PoShKeePass by PSKeePass</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">PoShKeePass</h1>
+      <h2 class="project-tagline">PowerShell module for KeePass</h2>
+      <a href="https://github.com/PSKeePass/PoShKeePass" class="btn">View on GitHub</a>
+      <a href="https://github.com/PSKeePass/PoShKeePass/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/PSKeePass/PoShKeePass/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="powershell-keepass" class="anchor" href="#powershell-keepass" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PowerShell KeePass</h1>
+
+<p><a href="https://www.powershellgallery.com/packages/PoShKeePass">PoShKeePass</a> is a PowerShell module that combines the ease of the PowerShell cli and the extensibility of the <a href="http://keepass.info/help/v2/setup.html">KeePassLib API</a> to provide a powerful and easy to use management and automating platform for <a href="http://keepass.info/">KeePass</a> databases.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ol>
+<li>
+<strong>Database Configuration Profiles</strong> - Supports mutliple databases and authentication options.</li>
+<li>
+<strong>Getting, Creating, Updating, and Removing KeePass Entries and Groups</strong> - All of these perform as much automatic database authentication as possible using the database configuration profile. For databases that use a masterkey (password) it will prompt for it.</li>
+<li>
+<strong>Generating KeePass Passwords</strong> - Supports most character sets and advanced keepass options. Also supports creating password profiles that can be specified to create a new password with the same rule set.</li>
+</ol>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<h3>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h3>
+
+<div class="highlight highlight-source-powershell"><pre><span class="pl-c1">Install-Module</span> <span class="pl-k">-</span>Name PoShKeePass</pre></div>
+
+<h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h3>
+
+<p>Please check out our <a href="https://github.com/PSKeePass/PoShKeePass/wiki/Getting-Started">Getting Started</a> documentation on our <a href="https://github.com/PSKeePass/PoShKeePass/wiki">wiki</a>.</p>
+
+<h2>
+<a id="important-notes--reminders" class="anchor" href="#important-notes--reminders" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Important Notes &amp; Reminders</h2>
+
+<ol>
+<li>Please always keep up to date <strong>backups</strong> of your KeePass database files .kdbx and .key files.</li>
+<li>The module uses the KeePassLib 2.3.x which is embedded in the module file.</li>
+<li>This module was built and tested in PowerShell 5 on Windows 10 but should work in PowerShell 4 and Windows 8.1 and Server 2012 R2 and up. It may work in some earlier versions but is currently untested and not supported. If you come across issues create an issue and I will look into fixing it or create a pull request.</li>
+<li>There is an underlying framework that I wrote into the module to make all of the api calls that I will eventually expose for advanced scripting.</li>
+</ol>
+
+<h2>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog</h2>
+
+<p>Please review the <a href="https://github.com/PSKeePass/PoShKeePass/blob/master/changelog.md">changelog document</a> for a full history.</p>
+
+<h3>
+<a id="changelog-poshkeepass-v2040" class="anchor" href="#changelog-poshkeepass-v2040" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog PoShKeePass v2.0.4.0</h3>
+
+<ul>
+<li>#108 Fixed bug by capturing PSCredential to MasterKey variable.</li>
+</ul>
+
+<h3>
+<a id="changelog-poshkeepass-v2039" class="anchor" href="#changelog-poshkeepass-v2039" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog PoShKeePass v2.0.3.9</h3>
+
+<ol>
+<li>#92 Added PowerShell Format XML File for creating PowerShell Object views.</li>
+<li>#90 Updated default properties returned for KeePass Entries to Include the Notes Property. Did this via the new format XML file.</li>
+<li>#67 Consolidated KeePass database connection and authentication functions. Thanks <a href="https://github.com/Ninjigen" class="user-mention">@Ninjigen</a> for your help on this.</li>
+<li>#67 Now supports authentication using all three methods as a combination: MasterKey, KeyFile, WindowsAccount. </li>
+<li>#100 Fixed bug when using the <code>-MasterKey</code> options on and of the functions. The proper variable is now removed.</li>
+<li>#95 Added internal function <code>Restore-KPConfigurationFile</code>. This is implemented to restore your configuration file from a previous version of the module, when updating from PSGallery.</li>
+<li>Moved exported functions to the Module Manifest.</li>
+</ol>
+
+<h3>
+<a id="changelog-poshkeepass-v2031" class="anchor" href="#changelog-poshkeepass-v2031" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog PoShKeePass v2.0.3.1</h3>
+
+<h4>
+<a id="issue-79---added-support-icon-management" class="anchor" href="#issue-79---added-support-icon-management" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Issue #79 - Added support Icon Management</h4>
+
+<ul>
+<li>Updated <code>New</code> and <code>Update</code> Entry and Group functions to support setting and
+updating Icon values.</li>
+<li>Update <code>ConvertTo-KPPSObject</code> to output the IconId.</li>
+<li>Added Pester Tests for adding and updating Icons.</li>
+<li>Update <code>Get-KPDynamicParameters</code> to support creating the Icon dynamic
+param from the <code>KeePassLib.PwIcon</code> Enum.</li>
+</ul>
+
+<h2>
+<a id="known-issues" class="anchor" href="#known-issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Known Issues</h2>
+
+<p>See the <a href="https://github.com/PSKeePass/PoShKeePass/issues?q=is%3Aissue+is%3Aopen+label%3AKnown-Issue">Known-Issue</a> tag to get a list of known issues and their status.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
+
+<ul>
+<li>If you are insterested in fixing issues and contributing directly to the code base, please see the documentation on <a href="https://github.com/PSKeePass/PoShKeePass/blob/master/contribute.md">How to Contribute</a>.</li>
+<li>If you come across a bug or have a feature request feel free to create an issue with the appropriate label.</li>
+</ul>
+
+<h2>
+<a id="shout-outs" class="anchor" href="#shout-outs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Shout-Outs</h2>
+
+<ul>
+<li>PSKeePass would like to thank <a href="https://github.com/JasonFossen">Jason Fossen</a> for his <a href="https://cyber-defense.sans.org/blog/2015/08/13/powershell-for-keepass-sample-script">initial work</a> with KeePass in PowerShell.</li>
+<li>PSKeePass would like to thank <a href="http://www.apdba.com/">Andrzej Pilacik</a> (aka <a href="https://github.com/cypisek77" class="user-mention">@cypisek77</a>) for his review and feedback on documentation and over all rubber ducking.</li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright (c) <a href="https://github.com/jkdba">John Klann</a>, <a href="https://github.com/chritea">Christian Lehrer</a>. All rights reserved.</p>
+
+<p>Licensed under the <a href="https://github.com/PSKeePass/PoShKeePass/blob/master/license">MIT</a> License.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/PSKeePass/PoShKeePass">PoShKeePass</a> is maintained by <a href="https://github.com/PSKeePass">PSKeePass</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
