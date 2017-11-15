@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>KeePassUuid</Name>
+      <ViewSelectedBy>
+        <TypeName>KeePassLib.PwUuid</TypeName>
+      </ViewSelectedBy>
+
+	  <ListControl>
+		<ListEntries>
+		  <ListEntry>
+		    <ListItems>
+			  <ListItem>
+				<Label>Uuid</Label>
+				<ScriptBlock>[System.BitConverter]::ToString($_.UuidBytes) -replace '-'</ScriptBlock>
+			  </ListItem>
+			</ListItems>
+		  </ListEntry>
+		</ListEntries>
+	  </ListControl>
+	  
+    </View>
+  </ViewDefinitions>
+</Configuration>

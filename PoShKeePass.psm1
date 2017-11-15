@@ -1987,11 +1987,11 @@ function New-KPConnection
             }
 
             $Database = $KeepassConfigurationObject.DatabasePath
-            [Switch] $UseWindowsAccount = $KeepassConfigurationObject.UseNetworkAccount
-            [Switch] $UseMasterKey = $KeepassConfigurationObject.UseMasterKey
-            if($KeepassConfigurationObject.KeyPath -ne '' ){
+            if(-not [string]::IsNullOrEmpty($KeepassConfigurationObject.KeyPath)) {
                 $KeyPath = $KeepassConfigurationObject.KeyPath
             }
+            [Switch] $UseWindowsAccount = $KeepassConfigurationObject.UseNetworkAccount
+            [Switch] $UseMasterKey = $KeepassConfigurationObject.UseMasterKey
             
             ## Prompt for MasterKey if specified in the profile and was not provided.
             if($UseMasterKey -and -not $MasterKey)
@@ -2032,7 +2032,7 @@ function New-KPConnection
             catch
             {
                 ##Exception : I will want to handle this error in a more user friendly error, as is the style of the rest of this module.
-                Write-Warning ('Could not read the specfied Key file [{0}].' -f $KeyPathItem.FullName)
+                Write-Warning ('Could not read the specified Key file [{0}].' -f $KeyPathItem.FullName)
             }
         }
 
@@ -3255,7 +3255,7 @@ function ConvertFrom-KPProtectedString
     }
 }
 
-function ConvertTo-KPPSObject
+function ConvertTo-KPPsObject
 {
     <#
         .SYNOPSIS
@@ -3272,7 +3272,7 @@ function ConvertTo-KPPSObject
 
             This Example Converts one or more KeePass Entries to a defined Powershell Object.
         .EXAMPLE
-            PS> Get-KeePassEntry -KeePassonnection $DB -UserName "AUserName" | ConvertTo-KeePassPsObject
+            PS> Get-KeePassEntry -KeePassonnection $DB -UserName "AUserName" | ConvertTo-KPPsObject
 
             This Example Converts one or more KeePass Entries to a defined Powershell Object.
         .PARAMETER KeePassEntry
@@ -3297,7 +3297,7 @@ function ConvertTo-KPPSObject
             {
                 ## Build Object
                 $KeePassPsObject = New-Object -TypeName PSObject
-                $KeePassPsObject | Add-Member -Name 'Uuid' -MemberType NoteProperty -Value $_keepassItem.Uuid
+                $KeePassPsObject | Add-Member -Name 'Uuid' -MemberType NoteProperty -Value ([System.BitConverter]::ToString($_keepassItem.Uuid.UuidBytes) -replace '-')
                 $KeePassPsObject | Add-Member -Name 'CreationTime' -MemberType NoteProperty -Value $_keepassItem.CreationTime
                 $KeePassPsObject | Add-Member -Name 'Expires' -MemberType NoteProperty -Value $_keepassItem.Expires
                 $KeePassPsObject | Add-Member -Name 'ExpireTime' -MemberType NoteProperty -Value $_keepassItem.ExpiryTime
@@ -3311,7 +3311,7 @@ function ConvertTo-KPPSObject
                 $KeePassPsObject | Add-Member -Name 'FullPath' -MemberType NoteProperty -Value $_keepassItem.ParentGroup.GetFullPath('/', $true)
                 $KeePassPsObject | Add-Member -Name 'Title' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('Title')
                 $KeePassPsObject | Add-Member -Name 'UserName' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('UserName')
-                $KeePassPsObject | Add-Member -Name 'Password' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('Password')
+                $KeePassPsObject | Add-Member -Name 'Password' -MemberType NoteProperty -Value ($_keepassItem.Strings.ReadSafe('Password') | ConvertTo-SecureString -AsPlainText -Force -ErrorAction SilentlyContinue)
                 $KeePassPsObject | Add-Member -Name 'URL' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('URL')
                 $KeePassPsObject | Add-Member -Name 'Notes' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('Notes')
                 $KeePassPsObject | Add-Member -Name 'IconId' -MemberType NoteProperty -Value $_keepassItem.IconId
