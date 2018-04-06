@@ -183,7 +183,8 @@ function Get-KeePassEntry
         [String] $KeePassEntryGroupPath,
 
         [Parameter(Position=1, Mandatory=$false)]
-        [Switch] $AsPlainText
+        [Alias('AsPlainText')]
+        [Switch] $AsSecureString
     )
     dynamicparam
     {
@@ -229,8 +230,8 @@ function Get-KeePassEntry
             $ResultEntries = Get-KPEntry -KeePassConnection $KeePassConnectionObject
         }
 
-        ## return results in plain text or not.
-        if($AsPlainText)
+        ## return results in secure strings or secure KP objects
+        if($AsSecureString)
         {
             $ResultEntries | ConvertTo-KpPsObject
         }
@@ -1987,7 +1988,9 @@ function New-KPConnection
             }
 
             $Database = $KeepassConfigurationObject.DatabasePath
-            $KeyPath = if($KeepassConfigurationObject.KeyPath -ne '' ){$KeepassConfigurationObject.KeyPath}else{$false}
+            if(-not [string]::IsNullOrEmpty($KeepassConfigurationObject.KeyPath)) {
+                $KeyPath = $KeepassConfigurationObject.KeyPath
+            }
             [Switch] $UseWindowsAccount = $KeepassConfigurationObject.UseNetworkAccount
             [Switch] $UseMasterKey = $KeepassConfigurationObject.UseMasterKey
             
@@ -3309,7 +3312,7 @@ function ConvertTo-KPPSObject
                 $KeePassPsObject | Add-Member -Name 'FullPath' -MemberType NoteProperty -Value $_keepassItem.ParentGroup.GetFullPath('/', $true)
                 $KeePassPsObject | Add-Member -Name 'Title' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('Title')
                 $KeePassPsObject | Add-Member -Name 'UserName' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('UserName')
-                $KeePassPsObject | Add-Member -Name 'Password' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('Password')
+                $KeePassPsObject | Add-Member -Name 'Password' -MemberType NoteProperty -Value ($_keepassItem.Strings.ReadSafe('Password') | ConvertTo-SecureString -AsPlainText -Force)
                 $KeePassPsObject | Add-Member -Name 'URL' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('URL')
                 $KeePassPsObject | Add-Member -Name 'Notes' -MemberType NoteProperty -Value $_keepassItem.Strings.ReadSafe('Notes')
                 $KeePassPsObject | Add-Member -Name 'IconId' -MemberType NoteProperty -Value $_keepassItem.IconId
